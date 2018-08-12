@@ -1,28 +1,80 @@
-.App {
-  text-align: center;
+body {
+  margin: 0;
+  padding: 0;
+  color: black;
+  background-color: #FAFAFA;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+header {
+  background-color: black;
   color: white;
+  font-size: 72px;
+  font-weight: 900;
+  padding: 30px 10px 10px 30px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  display: block;
+  height: 100px;
 }
 
-.App-title {
-  font-size: 1.5em;
+content#grid {
+  margin-top: 130px;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
 }
 
-.App-intro {
-  font-size: large;
+div.team-card {
+  min-width: 270px;
+  background-color: white;
+  height: 400px;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  margin: 15px;
+  box-sizing: border-box;
+  padding: 20px;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+div.team-card h1 {
+  margin: 0 0 10px 0;
+  padding: 0;
+  font-size: 22px;
+}
+
+ul.team-list {
+  margin: 0 0 0 30px;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+ul.team-list li {
+  padding-left: 10px;
+}
+
+ul.team-list li div.special {
+  margin: 0 10px 0 -40px;
+  display: inline-block;
+  width: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #888888;
+  line-height: 26px;
+  font-family: 'Roboto Condensed', 'Roboto', Helvetica, Arial, sans-serif;
+  text-align: right;
+}
+
+.red {
+  color: red!important;
+}
+
+header > .unallocated {
+  float: right;
+  font-size: 14px;
 }

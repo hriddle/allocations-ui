@@ -1,18 +1,74 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import TeamGrid from "./TeamGrid";
+import Header from "./Header";
+
+let isEffective = function(object, effectiveDate = new Date()) {
+  let startDate = new Date(object.startDate);
+  let endDate = new Date(object.endDate);
+  return effectiveDate >= startDate && effectiveDate <= endDate;
+};
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      teams: [],
+      unallocated: []
+    };
+  }
+
+  fetchProducts() {
+    fetch('https://allocations-graph.herokuapp.com/products', {mode: 'cors'})
+      .then(results => {
+        return results.json()
+      }).then(data => {
+      let teamCards = data.map(team => {
+        return {
+          id: team.id,
+          name: team.name,
+          currentTeamMembers: team.team.filter(person => {
+            return isEffective(person)
+          }).map(person => {
+            return {
+              id: person.id,
+              name: person.name,
+              role: person.role,
+              startDate: person.startDate,
+              endDate: person.endDate
+            }
+          })
+        };
+      });
+      this.setState({teams: teamCards});
+    })
+  }
+
+  fetchPeople() {
+    fetch('https://allocations-graph.herokuapp.com/people', {mode: 'cors'})
+      .then(results => {
+        return results.json()
+      }).then(data => {
+      let unallocatedPeople = data.filter(person => {
+        let currentProducts = person.productHistory.filter(product => {
+          return isEffective(product)
+        });
+        return currentProducts.length === 0;
+      });
+      this.setState({unallocated: unallocatedPeople});
+    })
+  }
+
+  componentDidMount() {
+    this.fetchProducts();
+    this.fetchPeople();
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div id="container">
+        <Header unallocated={this.state.unallocated}/>
+        <TeamGrid teams={this.state.teams}/>
       </div>
     );
   }
