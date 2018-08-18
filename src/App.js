@@ -9,6 +9,10 @@ let isEffective = function(object, effectiveDate = new Date()) {
   return effectiveDate >= startDate && effectiveDate <= endDate;
 };
 
+function getWorkingDate() {
+  return new Date().setHours(0, 0, 0, 0);
+}
+
 class App extends Component {
   constructor() {
     super();
@@ -45,7 +49,9 @@ class App extends Component {
   }
 
   fetchPeople() {
-    fetch('https://allocations-graph.herokuapp.com/people', {mode: 'cors'})
+    // let host = "https://allocations-graph.herokuapp.com";
+    let host = "http://localhost:8080";
+    fetch(host + '/people', {mode: 'cors'})
       .then(results => {
         return results.json()
       }).then(data => {
@@ -67,8 +73,8 @@ class App extends Component {
   render() {
     return (
       <div id="container">
-        <Header unallocated={this.state.unallocated}/>
-        <TeamGrid teams={this.state.teams}/>
+        <Header />
+        <TeamGrid workingDate={getWorkingDate()} teams={this.state.teams} unallocated={this.state.unallocated}/>
       </div>
     );
   }
