@@ -3,15 +3,13 @@ import './App.css';
 import TeamGrid from "./TeamGrid";
 import Header from "./Header";
 
-let isEffective = function(object, effectiveDate = new Date()) {
+let isEffective = function (object, effectiveDate = new Date()) {
   let startDate = new Date(object.startDate);
   let endDate = new Date(object.endDate);
   return effectiveDate >= startDate && effectiveDate <= endDate;
 };
 
-function getWorkingDate() {
-  return new Date().setHours(0, 0, 0, 0);
-}
+const host = 'https://allocations-graph.herokuapp.com';
 
 class App extends Component {
   constructor() {
@@ -23,11 +21,11 @@ class App extends Component {
   }
 
   fetchProducts() {
-    fetch('https://allocations-graph.herokuapp.com/products', {mode: 'cors'})
+    fetch(host + '/products', {mode: 'cors'})
       .then(results => {
         return results.json()
-      }).then(data => {
-      let teamCards = data.map(team => {
+      }).then(teamList => {
+      let teams = teamList.map(team => {
         return {
           id: team.id,
           name: team.name,
@@ -44,37 +42,19 @@ class App extends Component {
           })
         };
       });
-      this.setState({teams: teamCards});
-    })
-  }
-
-  fetchPeople() {
-    // let host = "https://allocations-graph.herokuapp.com";
-    let host = "http://localhost:8080";
-    fetch(host + '/people', {mode: 'cors'})
-      .then(results => {
-        return results.json()
-      }).then(data => {
-      let unallocatedPeople = data.filter(person => {
-        let currentProducts = person.productHistory.filter(product => {
-          return isEffective(product)
-        });
-        return currentProducts.length === 0;
-      });
-      this.setState({unallocated: unallocatedPeople});
+      this.setState({teams: teams});
     })
   }
 
   componentDidMount() {
     this.fetchProducts();
-    this.fetchPeople();
   }
 
   render() {
     return (
       <div id="container">
         <Header />
-        <TeamGrid workingDate={getWorkingDate()} teams={this.state.teams} unallocated={this.state.unallocated}/>
+        <TeamGrid teams={this.state.teams} />
       </div>
     );
   }
