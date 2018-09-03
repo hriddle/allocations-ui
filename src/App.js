@@ -3,25 +3,25 @@ import './App.css';
 import TeamGrid from "./TeamGrid";
 import Header from "./Header";
 
-let isEffective = function (object, effectiveDate = new Date()) {
-  let startDate = new Date(object.startDate);
-  let endDate = new Date(object.endDate);
-  return effectiveDate >= startDate && effectiveDate <= endDate;
-};
-
 const host = 'https://allocations-graph.herokuapp.com';
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       teams: [],
-      unallocated: []
+      unallocated: [],
+      workingDate: new Date()
     };
+    this.setWorkingDate = this.setWorkingDate.bind(this);
   }
 
-  fetchProducts() {
-    fetch(host + '/products', {mode: 'cors'})
+  setWorkingDate = function (workingDate) {
+    this.setState({workingDate: workingDate});
+  };
+
+  fetchProducts(queryDate = new Date().toISOString().substr(0, 10)) {
+    fetch(host + '/products?date=' + queryDate, {mode: 'cors'})
       .then(results => {
         return results.json()
       }).then(teamList => {
@@ -29,9 +29,7 @@ class App extends Component {
         return {
           id: team.id,
           name: team.name,
-          currentTeamMembers: team.team.filter(person => {
-            return isEffective(person)
-          }).map(person => {
+          currentTeamMembers: team.team.map(person => {
             return {
               id: person.id,
               name: person.name,
@@ -50,11 +48,17 @@ class App extends Component {
     this.fetchProducts();
   }
 
+  componentDidUpdate(prevProps, prevState, _) {
+    if (this.state.workingDate !== prevState.workingDate) {
+      this.fetchProducts(this.state.workingDate)
+    }
+  }
+
   render() {
     return (
       <div id="container">
-        <Header />
-        <TeamGrid teams={this.state.teams} />
+        <Header setWorkingDate={this.setWorkingDate} currentWorkingDate={this.state.workingDate}/>
+        <TeamGrid teams={this.state.teams} workingDate={this.state.workingDate}/>
       </div>
     );
   }

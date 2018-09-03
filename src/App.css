@@ -10,7 +10,6 @@ header {
   background-color: black;
   color: white;
   font-size: 72px;
-  font-weight: 900;
   padding: 30px 10px 10px 30px;
   position: fixed;
   top: 0px;
@@ -72,9 +71,4 @@ ul.team-list li div.special {
 
 .red {
   color: red!important;
-}
-
-header > .unallocated {
-  float: right;
-  font-size: 14px;
 }
