@@ -9,12 +9,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoggedIn: false,
       teams: [],
       unallocated: [],
       workingDate: new Date()
     };
+    this.handleLogin = this.handleLogin.bind(this);
     this.setWorkingDate = this.setWorkingDate.bind(this);
   }
+
+  handleLogin = validCredentials => {
+    if (validCredentials) {
+      this.setState({isLoggedIn: true})
+    }
+  };
 
   setWorkingDate = function (workingDate) {
     this.setState({workingDate: workingDate});
@@ -58,7 +66,7 @@ class App extends Component {
   render() {
     return (
       <div id="container">
-        <Header setWorkingDate={this.setWorkingDate} currentWorkingDate={this.state.workingDate}/>
+        <Header isLoggedIn={this.state.isLoggedIn} handleLogin={this.handleLogin} setWorkingDate={this.setWorkingDate} currentWorkingDate={this.state.workingDate}/>
         <TeamGrid teams={this.state.teams} workingDate={this.state.workingDate}/>
       </div>
     );

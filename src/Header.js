@@ -7,6 +7,7 @@ import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import grey from '@material-ui/core/colors/grey'
+import LoginButton from "./login/LoginButton";
 
 const styles = {
   root: {
@@ -27,7 +28,7 @@ class Header extends Component {
     this.handleDateChange = this.handleDateChange.bind(this);
   }
 
-  handleDateChange = function (date) {
+  handleDateChange = date => {
     this.props.setWorkingDate(date);
   };
 
@@ -44,11 +45,12 @@ class Header extends Component {
           color: grey['500'],
         },
       }
-    },
+    }
   });
 
   render() {
     const {classes} = this.props;
+    const {isLoggedIn} = this.state;
 
     return (
       <MuiThemeProvider theme={this.theme}>
@@ -57,15 +59,19 @@ class Header extends Component {
             <Typography variant="headline" className={classes.flex}>
               Allocations
             </Typography>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <DatePicker
-                keyboard
-                onChange={this.handleDateChange}
-                value={this.props.currentWorkingDate}
-                autoOk={true}
-                showTodayButton={true}
-              />
-            </MuiPickersUtilsProvider>
+            {isLoggedIn ? (
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                  keyboard
+                  onChange={this.handleDateChange}
+                  value={this.props.currentWorkingDate}
+                  autoOk={true}
+                  showTodayButton={true}
+                />
+              </MuiPickersUtilsProvider>
+            ) : (
+              <LoginButton theme={this.theme} handleLogin={this.props.handleLogin}/>
+            )}
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>
