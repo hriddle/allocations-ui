@@ -110,7 +110,7 @@ class App extends Component {
       <div id="container">
         <Header isLoggedIn={this.state.isLoggedIn} handleLogin={this.handleLogin} setWorkingDate={this.setWorkingDate} currentWorkingDate={this.state.workingDate}
                 getEdits={this.getEdits}/>
-        <TeamGrid teams={this.state.teams} workingDate={this.state.workingDate} storeEdit={this.storeEdit}/>
+        <TeamGrid isLoggedIn={this.state.isLoggedIn} teams={this.state.teams} workingDate={this.state.workingDate} storeEdit={this.storeEdit}/>
       </div>
     );
   }

@@ -31,6 +31,7 @@ class TeamCard extends Component {
   }
 
   render() {
+    const {editable} = this.props;
     let teamList = this.state.teamMembers.sort((a, b) => {
       return Roles[a.role].sortOrder - Roles[b.role].sortOrder;
     }).map(person => {
@@ -38,7 +39,7 @@ class TeamCard extends Component {
       let className = "";
       if (person.unsaved === true) className = "unsaved";
       return (
-        <li key={person.id} className={className} draggable onDragStart={e => this.onDragStart(e, person, this.props.id)}>
+        <li key={person.id} className={className} draggable={editable} onDragStart={e => this.onDragStart(e, person, this.props.id)}>
           {special}{person.name}
         </li>
       )

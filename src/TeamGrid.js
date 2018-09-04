@@ -45,7 +45,7 @@ class TeamGrid extends Component {
   render() {
     let teamCards = this.props.teams.map(team => {
       return (
-        <TeamCard key={team.id} id={team.id} name={team.name} currentTeamMembers={team.currentTeamMembers}
+        <TeamCard editable={this.props.isLoggedIn} key={team.id} id={team.id} name={team.name} currentTeamMembers={team.currentTeamMembers}
                   changePersonTeam={this.changePersonTeam}/>
       );
     });
