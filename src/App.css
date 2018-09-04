@@ -34,7 +34,7 @@ div.team-card h1 {
 }
 
 ul.team-list {
-  margin: 0 0 0 30px;
+  margin: 0;
   padding: 0;
   list-style: none;
   font-size: 16px;
@@ -45,8 +45,12 @@ ul.team-list li {
   padding-left: 10px;
 }
 
+ul.team-list li.unsaved {
+  background-color: aquamarine;
+}
+
 ul.team-list li div.special {
-  margin: 0 10px 0 -40px;
+  margin: 0 10px 0 0;
   display: inline-block;
   width: 30px;
   font-size: 12px;

@@ -35,8 +35,10 @@ class TeamGrid extends Component {
     teams[oldTeamIndex].currentTeamMembers.splice(teams[oldTeamIndex].currentTeamMembers.findIndex(p => {
       return p.id === person.id
     }), 1);
+    person.unsaved = true;
     teams[newTeamIndex].currentTeamMembers.push(person);
 
+    this.props.storeEdit("move", person, oldTeamId, newTeamId);
     this.setState({teams: teams});
   };
 

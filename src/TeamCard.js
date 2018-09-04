@@ -35,8 +35,10 @@ class TeamCard extends Component {
       return Roles[a.role].sortOrder - Roles[b.role].sortOrder;
     }).map(person => {
       let special = <div className="special">{Roles[person.role].abbreviation}</div>;
+      let className = "";
+      if (person.unsaved === true) className = "unsaved";
       return (
-        <li key={person.id} draggable onDragStart={e => this.onDragStart(e, person, this.props.id)}>
+        <li key={person.id} className={className} draggable onDragStart={e => this.onDragStart(e, person, this.props.id)}>
           {special}{person.name}
         </li>
       )
@@ -56,13 +58,15 @@ class TeamCard extends Component {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("personId", person.id);
     event.dataTransfer.setData("personName", person.name);
+    event.dataTransfer.setData("personRole", person.role);
     event.dataTransfer.setData("oldTeamId", teamId);
   }
 
   onDrop(event, newTeamId) {
     let personId = parseInt(event.dataTransfer.getData("personId"));
     let personName = event.dataTransfer.getData("personName");
-    let person = {id: personId, name: personName, role: "UNKNOWN"};
+    let personRole = event.dataTransfer.getData("personRole");
+    let person = {id: personId, name: personName, role: personRole};
     let oldTeamId = parseInt(event.dataTransfer.getData("oldTeamId"));
     this.props.changePersonTeam(person, oldTeamId, newTeamId);
   }
