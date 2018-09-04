@@ -20,7 +20,8 @@ class App extends Component {
     this.setState({workingDate: workingDate});
   };
 
-  fetchProducts(queryDate = new Date().toISOString().substr(0, 10)) {
+  fetchProducts(date = new Date()) {
+    let queryDate = date.toISOString().substr(0,10);
     fetch(host + '/products?date=' + queryDate, {mode: 'cors'})
       .then(results => {
         return results.json()

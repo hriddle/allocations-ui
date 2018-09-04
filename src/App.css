@@ -6,21 +6,8 @@ body {
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
 }
 
-header {
-  background-color: black;
-  color: white;
-  font-size: 72px;
-  padding: 30px 10px 10px 30px;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  display: block;
-  height: 100px;
-}
-
 content#grid {
-  margin-top: 130px;
+  margin-top: 70px;
   padding: 30px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));

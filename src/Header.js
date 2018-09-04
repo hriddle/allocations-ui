@@ -1,9 +1,25 @@
 import React, {Component} from 'react';
-import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import DatePicker from "./DatePicker.js";
+import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import DatePicker from 'material-ui-pickers/DatePicker';
+import grey from '@material-ui/core/colors/grey'
+
+const styles = {
+  root: {
+    flexGrow: 1,
+  },
+  flex: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
+};
 
 class Header extends Component {
   constructor(props) {
@@ -12,48 +28,49 @@ class Header extends Component {
   }
 
   handleDateChange = function (date) {
-    this.props.setWorkingDate(date)
+    this.props.setWorkingDate(date);
   };
 
   theme = createMuiTheme({
     palette: {
-      type: 'dark'
-    },
-    typography: {
-      headline: {
-        fontSize: 72,
-        fontWeight: 900,
+      type: 'dark',
+      primary: {
+        main: '#424242'
       }
-    }
+    },
+    overrides: {
+      MuiPickersModal: {
+        dialogAction: {
+          color: grey['500'],
+        },
+      }
+    },
   });
 
   render() {
+    const {classes} = this.props;
+
     return (
       <MuiThemeProvider theme={this.theme}>
-        <AppBar color={"#000000"}>
+        <AppBar>
           <Toolbar>
-            <Typography variant="headline">
+            <Typography variant="headline" className={classes.flex}>
               Allocations
             </Typography>
-                   <DatePicker
-                     label="Working Date"
-                     defaultDate={this.props.currentWorkingDate}
-                     handleDateChange={this.handleDateChange}/>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePicker
+                keyboard
+                onChange={this.handleDateChange}
+                value={this.props.currentWorkingDate}
+                autoOk={true}
+                showTodayButton={true}
+              />
+            </MuiPickersUtilsProvider>
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>
     )
-    // return (
-    //   <MuiThemeProvider theme={this.theme}>
-    //     <header><span>Allocations</span>
-    //       <DatePicker
-    //         label="Working Date"
-    //         defaultDate={this.props.currentWorkingDate}
-    //         handleDateChange={this.handleDateChange}/>
-    //     </header>
-    //   </MuiThemeProvider>
-    // )
   }
 }
 
-export default Header;
+export default withStyles(styles)(Header);
