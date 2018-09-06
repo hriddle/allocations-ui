@@ -3,7 +3,7 @@ import './App.css';
 import TeamGrid from "./TeamGrid";
 import Header from "./Header";
 
-const host = 'https://allocations-graph.herokuapp.com';
+const host = 'http://localhost:8080';//'https://allocations-graph.herokuapp.com';
 
 let formatDate = date => {
   return date.toISOString().substr(0, 10);
@@ -21,8 +21,8 @@ class App extends Component {
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.setWorkingDate = this.setWorkingDate.bind(this);
-    this.storeEdit = this.storeEdit.bind(this);
     this.getEdits = this.getEdits.bind(this);
+    this.changePersonTeam = this.changePersonTeam.bind(this);
   }
 
   handleLogin = validCredentials => {
@@ -35,7 +35,7 @@ class App extends Component {
     this.setState({workingDate: workingDate});
   };
 
-  storeEdit = function (op, person, oldTeamId, newTeamId) {
+  storeEdit(op, person, oldTeamId, newTeamId) {
     if (op === "move") {
       let originalIndex = this.state.edits.findIndex(e => {
         return e.op === "move" && e.person.id === person.id && e.from === newTeamId && e.to === oldTeamId;
@@ -53,6 +53,15 @@ class App extends Component {
         });
         return;
       }
+      let previousMoveIndex = this.state.edits.findIndex(e => {
+        return e.op === "move" && e.person.id === person.id
+      });
+      if (previousMoveIndex !== -1) {
+        let edits = this.state.edits;
+        edits[previousMoveIndex].to = newTeamId;
+        this.setState({edits: edits});
+        return;
+      }
     }
     let newEdit = {
       op: op,
@@ -67,7 +76,7 @@ class App extends Component {
     this.setState({edits: edits})
   };
 
-  getEdits = function () {
+  getEdits() {
     return this.state.edits
   };
 
@@ -96,6 +105,27 @@ class App extends Component {
     })
   }
 
+  changePersonTeam(person, oldTeamId, newTeamId) {
+    if (oldTeamId === newTeamId) {
+      return;
+    }
+    let oldTeamIndex = this.state.teams.findIndex((element) => {
+      return element.id === oldTeamId
+    });
+    let newTeamIndex = this.state.teams.findIndex((element) => {
+      return element.id === newTeamId
+    });
+    let teams = this.state.teams;
+    teams[oldTeamIndex].currentTeamMembers.splice(teams[oldTeamIndex].currentTeamMembers.findIndex(p => {
+      return p.id === person.id
+    }), 1);
+    person.unsaved = true;
+    teams[newTeamIndex].currentTeamMembers.push(person);
+
+    this.storeEdit("move", person, oldTeamId, newTeamId);
+    this.setState({teams: teams});
+  };
+
   componentDidMount() {
     this.fetchProducts();
   }
@@ -111,7 +141,7 @@ class App extends Component {
       <div id="container">
         <Header isLoggedIn={this.state.isLoggedIn} handleLogin={this.handleLogin} setWorkingDate={this.setWorkingDate} currentWorkingDate={this.state.workingDate}
                 getEdits={this.getEdits}/>
-        <TeamGrid isLoggedIn={this.state.isLoggedIn} teams={this.state.teams} workingDate={this.state.workingDate} storeEdit={this.storeEdit}/>
+        <TeamGrid isLoggedIn={this.state.isLoggedIn} teams={this.state.teams} workingDate={this.state.workingDate} changePersonTeam={this.changePersonTeam}/>
       </div>
     );
   }

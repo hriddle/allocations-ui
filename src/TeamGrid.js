@@ -7,7 +7,6 @@ class TeamGrid extends Component {
     this.state = {
       teams: [],
     };
-    this.changePersonTeam = this.changePersonTeam.bind(this);
   }
 
   componentDidMount() {
@@ -20,33 +19,11 @@ class TeamGrid extends Component {
     }
   }
 
-  changePersonTeam = function (person, oldTeamId, newTeamId) {
-    if (oldTeamId === newTeamId) {
-      return;
-    }
-    let oldTeamIndex = this.state.teams.findIndex((element) => {
-      return element.id === oldTeamId
-    });
-    let newTeamIndex = this.state.teams.findIndex((element) => {
-      return element.id === newTeamId
-    });
-
-    let teams = this.state.teams;
-    teams[oldTeamIndex].currentTeamMembers.splice(teams[oldTeamIndex].currentTeamMembers.findIndex(p => {
-      return p.id === person.id
-    }), 1);
-    person.unsaved = true;
-    teams[newTeamIndex].currentTeamMembers.push(person);
-
-    this.props.storeEdit("move", person, oldTeamId, newTeamId);
-    this.setState({teams: teams});
-  };
-
   render() {
     let teamCards = this.props.teams.map(team => {
       return (
         <TeamCard editable={this.props.isLoggedIn} key={team.id} id={team.id} name={team.name} currentTeamMembers={team.currentTeamMembers}
-                  changePersonTeam={this.changePersonTeam} workingDate={this.props.workingDate}/>
+                  changePersonTeam={this.props.changePersonTeam} workingDate={this.props.workingDate}/>
       );
     });
 
