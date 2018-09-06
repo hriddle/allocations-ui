@@ -84,6 +84,7 @@ class App extends Component {
             return {
               id: person.id,
               name: person.name,
+              company: person.company,
               role: person.role,
               startDate: person.startDate,
               endDate: person.endDate

@@ -61,6 +61,10 @@ ul.team-list li div.special {
   text-align: right;
 }
 
+ul.team-list li.contractor {
+  font-style: italic;
+}
+
 .overdue {
   color: red!important;
 }
