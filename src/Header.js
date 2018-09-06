@@ -111,40 +111,41 @@ class Header extends Component {
             <Typography variant="headline" className={classes.flex}>
               Allocations
             </Typography>
-            {isLoggedIn ? (
-              <div>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <DatePicker
-                    keyboard
-                    onChange={this.handleDateChange}
-                    value={this.props.currentWorkingDate}
-                    autoOk={true}
-                    showTodayButton={true}
-                  />
-                </MuiPickersUtilsProvider>
-                <Button onClick={this.handleClickViewAllChanges.bind(this)} className={classes.button}>View All Changes</Button>
-                <Dialog
-                  open={this.state.viewAllChangesDialogOpen}
-                  onClose={this.handleClose}
-                  aria-labelledby="form-dialog-title"
-                >
-                  <DialogTitle id="form-dialog-title">All Changes</DialogTitle>
-                  <DialogContent>
-                    {edits.length === 0 ? (
-                      <DialogContentText>No changes have been made.</DialogContentText>
-                    ) : (
-                      <List>{changesList}</List>
-                    )}
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={this.handleCloseViewAllChanges}>Close</Button>
-                    <Button onClick={this.handleSaveAllChanges.bind(this)}>Save Changes</Button>
-                  </DialogActions>
-                </Dialog>
-              </div>
-            ) : (
-              <LoginButton theme={this.theme} handleLogin={this.props.handleLogin}/>
-            )}
+            <div>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                  keyboard
+                  onChange={this.handleDateChange}
+                  value={this.props.currentWorkingDate}
+                  autoOk={true}
+                  showTodayButton={true}
+                />
+              </MuiPickersUtilsProvider>
+              {isLoggedIn &&
+              <Button onClick={this.handleClickViewAllChanges.bind(this)} className={classes.button}>View All Changes</Button>
+              }
+              <Dialog
+                open={this.state.viewAllChangesDialogOpen}
+                onClose={this.handleClose}
+                aria-labelledby="form-dialog-title"
+              >
+                <DialogTitle id="form-dialog-title">All Changes</DialogTitle>
+                <DialogContent>
+                  {edits.length === 0 ? (
+                    <DialogContentText>No changes have been made.</DialogContentText>
+                  ) : (
+                    <List>{changesList}</List>
+                  )}
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleCloseViewAllChanges}>Close</Button>
+                  <Button onClick={this.handleSaveAllChanges.bind(this)}>Save Changes</Button>
+                </DialogActions>
+              </Dialog>
+            </div>
+            {!isLoggedIn &&
+            <LoginButton theme={this.theme} handleLogin={this.props.handleLogin}/>
+            }
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>
