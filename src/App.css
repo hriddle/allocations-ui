@@ -61,6 +61,14 @@ ul.team-list li div.special {
   text-align: right;
 }
 
-.red {
+.overdue {
   color: red!important;
+}
+
+.new-to-team {
+  color: mediumaquamarine!important;
+}
+
+.dot {
+  padding-left: 10px;
 }

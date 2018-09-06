@@ -5,7 +5,7 @@ class TeamGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      teams: []
+      teams: [],
     };
     this.changePersonTeam = this.changePersonTeam.bind(this);
   }
@@ -16,7 +16,7 @@ class TeamGrid extends Component {
 
   componentDidUpdate(prevProps, prevState, _) {
     if (this.props.teams !== prevProps.teams) {
-      this.setState({teams: this.props.teams})
+      this.setState({teams: this.props.teams});
     }
   }
 
@@ -46,7 +46,7 @@ class TeamGrid extends Component {
     let teamCards = this.props.teams.map(team => {
       return (
         <TeamCard editable={this.props.isLoggedIn} key={team.id} id={team.id} name={team.name} currentTeamMembers={team.currentTeamMembers}
-                  changePersonTeam={this.changePersonTeam}/>
+                  changePersonTeam={this.changePersonTeam} workingDate={this.props.workingDate}/>
       );
     });
 
