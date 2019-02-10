@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Card from '@material-ui/core/Card';
-
+import {getUTCDate} from "./DateUtils";
 
 const Roles = {
   "PM": {abbreviation: "PM", sortOrder: 1},
@@ -32,20 +32,16 @@ class TeamCard extends Component {
 
   overdueForRotation(person) {
     let weeksOnTeam = 12;
-    let date = this.getUTCDate(new Date(person.startDate));
+    let date = getUTCDate(new Date(person.startDate));
     date.setDate(date.getDate() + (weeksOnTeam * 7));
     return date <= this.props.workingDate;
   }
 
   newlyRotated(person) {
     let weeks = 4;
-    let date = this.getUTCDate(new Date(person.startDate));
+    let date = getUTCDate(new Date(person.startDate));
     date.setDate(date.getDate() + (weeks * 7));
     return date >= this.props.workingDate;
-  }
-
-  getUTCDate(date) {
-    return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0);
   }
 
   getDotColor(person) {

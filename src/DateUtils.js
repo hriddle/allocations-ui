@@ -1,0 +1,1 @@
+export const getUTCDate = date => new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0);
