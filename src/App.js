@@ -3,8 +3,6 @@ import './App.css';
 import TeamGrid from "./TeamGrid";
 import Header from "./Header";
 
-const host = 'http://localhost:8080';//'https://allocations-graph.herokuapp.com';
-
 let formatDate = date => {
   return date.toISOString().substr(0, 10);
 };
@@ -81,6 +79,7 @@ class App extends Component {
   };
 
   fetchProducts(date = new Date()) {
+    let host = process.env.REACT_APP_ALLOCATIONS_API_HOST;
     fetch(host + '/products?date=' + formatDate(date), {mode: 'cors'})
       .then(results => {
         return results.json()
@@ -127,6 +126,7 @@ class App extends Component {
   };
 
   componentDidMount() {
+    console.log(process.env);
     this.fetchProducts();
   }
 
