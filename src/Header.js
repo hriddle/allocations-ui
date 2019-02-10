@@ -54,7 +54,7 @@ class Header extends Component {
     palette: {
       type: 'dark',
       primary: {
-        main: '#424242'
+        main: grey['700']
       }
     },
     overrides: {
