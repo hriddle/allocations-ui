@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import TeamCard from "./TeamCard";
-import {getUTCDate} from "./DateUtils";
+import {isDateInThePast} from "./DateUtils";
 
 class TeamGrid extends Component {
   constructor(props) {
@@ -20,15 +20,9 @@ class TeamGrid extends Component {
     }
   }
 
-  isDateInThePast(workingDate) {
-    let today = getUTCDate(new Date());
-    let date = getUTCDate(new Date(workingDate));
-    return date < today;
-  }
-
   render() {
     let teamCards = this.props.teams.map(team => {
-      let editable = this.props.isLoggedIn && !this.isDateInThePast(this.props.workingDate);
+      let editable = this.props.isLoggedIn && !isDateInThePast(this.props.workingDate);
       return (
         <TeamCard editable={editable} key={team.id} id={team.id} name={team.name} currentTeamMembers={team.currentTeamMembers}
                   changePersonTeam={this.props.changePersonTeam} workingDate={this.props.workingDate}/>
