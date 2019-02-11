@@ -66,6 +66,7 @@ class LoginButton extends React.Component {
                   label="Username"
                   type="text"
                   fullWidth
+                  autoFocus
                   onChange={this.handleCredentialsChange('username')}
                   InputProps={{
                     startAdornment: (
