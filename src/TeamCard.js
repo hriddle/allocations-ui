@@ -56,42 +56,47 @@ class TeamCard extends Component {
 
   render() {
     const {editable} = this.props;
-    let teamList = this.state.teamMembers.sort((a, b) => {
-      let aOrder = Roles[a.role].sortOrder;
-      let bOrder = Roles[b.role].sortOrder;
-      if (aOrder === bOrder) {
-        if (a.company === b.company) {
-          return 0;
-        } else if (a.company === "OTHER") {
-          return 1;
-        } else {
-          return -1;
+    let hasTeam = this.state.teamMembers.length > 0;
+    let teamList = [];
+    if (hasTeam) {
+      teamList = this.state.teamMembers.sort((a, b) => {
+        let aOrder = Roles[a.role].sortOrder;
+        let bOrder = Roles[b.role].sortOrder;
+        if (aOrder === bOrder) {
+          if (a.company === b.company) {
+            return 0;
+          } else if (a.company === "OTHER") {
+            return 1;
+          } else {
+            return -1;
+          }
         }
-      }
-      return aOrder - bOrder;
-    }).map(person => {
-      let roleAbbreviation = Roles[person.role].abbreviation;
-      let dot = "";
-      let dotColor = this.getDotColor(person);
-      if (dotColor !== undefined) {
-        dot = <span className={["dot", dotColor].join(" ")}>●</span>
-      }
-      let classNames = [];
-      if (person.unsaved === true) classNames.push("unsaved");
-      if (person.company === "OTHER") classNames.push("contractor");
-      return (
-        <li key={person.id} className={classNames.join(" ")} draggable={editable} onDragStart={e => this.onDragStart(e, person, this.props.id)}>
-          <div className="special">{roleAbbreviation}</div>{person.name}{dot}
-        </li>
-      )
-    });
-
+        return aOrder - bOrder;
+      }).map(person => {
+        let roleAbbreviation = Roles[person.role].abbreviation;
+        let dot = "";
+        let dotColor = this.getDotColor(person);
+        if (dotColor !== undefined) {
+          dot = <span className={["dot", dotColor].join(" ")}>●</span>
+        }
+        let classNames = [];
+        if (person.unsaved === true) classNames.push("unsaved");
+        if (person.company === "OTHER") classNames.push("contractor");
+        return (
+          <li key={person.id} className={classNames.join(" ")} draggable={editable} onDragStart={e => this.onDragStart(e, person, this.props.id)}>
+            <div className="special">{roleAbbreviation}</div>{person.name}{dot}
+          </li>
+        )
+      });
+    }
     return (
       <Card className="team-card" onDragOver={e => this.onDragOver(e)} onDrop={e => this.onDrop(e, this.props.id)}>
         <h1>{this.props.name}</h1>
+        {hasTeam &&
         <ul className="team-list">
           {teamList}
         </ul>
+        }
       </Card>
     )
   }

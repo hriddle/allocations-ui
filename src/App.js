@@ -19,7 +19,11 @@ class App extends Component {
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.setWorkingDate = this.setWorkingDate.bind(this);
+    this.handleAddProduct = this.handleAddProduct.bind(this);
+    this.handleAddPerson = this.handleAddPerson.bind(this);
     this.getEdits = this.getEdits.bind(this);
+    this.addPerson = this.addPerson.bind(this);
+    this.addProduct = this.addProduct.bind(this);
     this.changePersonTeam = this.changePersonTeam.bind(this);
   }
 
@@ -33,46 +37,73 @@ class App extends Component {
     this.setState({workingDate: workingDate});
   };
 
-  storeEdit(op, person, oldTeamId, newTeamId) {
-    if (op === "move") {
-      let originalIndex = this.state.edits.findIndex(e => {
-        return e.op === "move" && e.person.id === person.id && e.from === newTeamId && e.to === oldTeamId;
-      });
-      if (originalIndex !== -1) {
-        let edits = this.state.edits;
-        edits.splice(originalIndex, 1);
-        this.setState({edits: edits});
+  handleAddProduct = (name, description) => {
+    this.addProduct(name, description);
+  };
 
-        let teamIndex = this.state.teams.findIndex(team => {return team.id === newTeamId});
-        this.state.teams[teamIndex].currentTeamMembers.forEach(p => {
-          if (person.id === p.id) {
-            person.unsaved = false;
-          }
-        });
-        return;
-      }
-      let previousMoveIndex = this.state.edits.findIndex(e => {
-        return e.op === "move" && e.person.id === person.id
+  handleAddPerson = (name, company, role, level) => {
+    this.addPerson(name, company, role, level);
+  };
+
+  storePersonRotation(person, oldTeamId, newTeamId) {
+    let originalIndex = this.state.edits.findIndex(e => {
+      return e.op === "person.rotate" && e.person.id === person.id && e.from === newTeamId && e.to === oldTeamId;
+    });
+    if (originalIndex !== -1) {
+      let edits = this.state.edits;
+      edits.splice(originalIndex, 1);
+      this.setState({edits: edits});
+
+      let teamIndex = this.state.teams.findIndex(team => {return team.id === newTeamId});
+      this.state.teams[teamIndex].currentTeamMembers.forEach(p => {
+        if (person.id === p.id) {
+          person.unsaved = false;
+        }
       });
-      if (previousMoveIndex !== -1) {
-        let edits = this.state.edits;
-        edits[previousMoveIndex].to = newTeamId;
-        this.setState({edits: edits});
-        return;
-      }
+      return;
+    }
+    let previousMoveIndex = this.state.edits.findIndex(e => {
+      return e.op === "person.rotate" && e.person.id === person.id
+    });
+    if (previousMoveIndex !== -1) {
+      let edits = this.state.edits;
+      edits[previousMoveIndex].to = newTeamId;
+      this.setState({edits: edits});
+      return;
     }
     let newEdit = {
-      op: op,
+      op: "person.rotate",
       date: formatDate(this.state.workingDate),
       person: person,
       from: oldTeamId,
       to: newTeamId
     };
+    this.storeEdit(newEdit);
+  };
 
+  storeEdit(edit) {
     let edits = this.state.edits;
-    edits.push(newEdit);
+    edits.push(edit);
     this.setState({edits: edits})
   };
+
+  storeNewProduct(product) {
+    let newEdit = {
+      op: "product.add",
+      date: formatDate(this.state.workingDate),
+      product: product
+    };
+    this.storeEdit(newEdit);
+  }
+
+  storeNewPerson(person) {
+    let newEdit = {
+      op: "person.add",
+      date: formatDate(this.state.workingDate),
+      person: person
+    };
+    this.storeEdit(newEdit);
+  }
 
   getEdits() {
     return this.state.edits
@@ -100,6 +131,11 @@ class App extends Component {
           })
         };
       });
+      teams.push({
+        id: "UNALLOCATED",
+        name: "Unallocated",
+        currentTeamMembers: []
+      });
       this.setState({teams: teams});
     })
   }
@@ -119,9 +155,43 @@ class App extends Component {
       return p.id === person.id
     }), 1);
     person.unsaved = true;
-    teams[newTeamIndex].currentTeamMembers.push(person);
 
-    this.storeEdit("move", person, oldTeamId, newTeamId);
+    this.storePersonRotation(person, oldTeamId, newTeamId);
+
+    teams[newTeamIndex].currentTeamMembers.push(person);
+    this.setState({teams: teams});
+  };
+
+  addProduct(name, description) {
+    let newProduct = {
+      id: name.toLowerCase().replace(" ", "-"),
+      name: name,
+      description: description,
+      startDate: formatDate(this.state.workingDate),
+      currentTeamMembers: []
+    };
+    newProduct.unsaved = true;
+    this.storeNewProduct(newProduct);
+
+    let teams = this.state.teams;
+    teams.push(newProduct);
+    this.setState({teams: teams});
+  };
+
+  addPerson(name, company, role, level) {
+    let newPerson = {
+      id: name.toLowerCase().replace(" ", "-"),
+      name: name,
+      company: company,
+      role: role,
+      level: level,
+      startDate: formatDate(this.state.workingDate)
+    };
+    newPerson.unsaved = true;
+    this.storeNewPerson(newPerson);
+
+    let teams = this.state.teams;
+    teams["UNALLOCATED"].currentTeamMembers.push(newPerson);
     this.setState({teams: teams});
   };
 
@@ -138,9 +208,19 @@ class App extends Component {
   render() {
     return (
       <div id="container">
-        <Header isLoggedIn={this.state.isLoggedIn} handleLogin={this.handleLogin} setWorkingDate={this.setWorkingDate} currentWorkingDate={this.state.workingDate}
-                getEdits={this.getEdits}/>
-        <TeamGrid isLoggedIn={this.state.isLoggedIn} teams={this.state.teams} workingDate={this.state.workingDate} changePersonTeam={this.changePersonTeam}/>
+        <Header isLoggedIn={this.state.isLoggedIn}
+                handleLogin={this.handleLogin}
+                setWorkingDate={this.setWorkingDate}
+                currentWorkingDate={this.state.workingDate}
+                getEdits={this.getEdits}
+                handleAddPerson={this.handleAddPerson}
+                handleAddProduct={this.handleAddProduct}
+        />
+        <TeamGrid isLoggedIn={this.state.isLoggedIn}
+                  teams={this.state.teams}
+                  workingDate={this.state.workingDate}
+                  changePersonTeam={this.changePersonTeam}
+        />
       </div>
     );
   }

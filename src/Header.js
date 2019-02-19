@@ -9,6 +9,8 @@ import DatePicker from 'material-ui-pickers/DatePicker';
 import grey from '@material-ui/core/colors/grey'
 import LoginButton from "./login/LoginButton";
 import EditsButton from "./EditsButton";
+import AddProductButton from "./AddProductButton";
+import AddPersonButton from "./AddPersonButton";
 
 const styles = theme => ({
   root: {
@@ -78,6 +80,8 @@ class Header extends Component {
             </MuiPickersUtilsProvider>
             {!isLoggedIn && <LoginButton theme={this.theme} handleLogin={this.props.handleLogin} classes={classes}/>}
             {isLoggedIn && <EditsButton theme={this.theme} getEdits={this.props.getEdits} classes={classes} />}
+            {isLoggedIn && <AddProductButton theme={this.theme} handleAddProduct={this.props.handleAddProduct} classes={classes}/>}
+            {isLoggedIn && <AddPersonButton theme={this.theme} handleAddPerson={this.props.handleAddPerson} classes={classes}/>}
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>
